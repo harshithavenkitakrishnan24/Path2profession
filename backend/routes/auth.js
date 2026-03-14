@@ -191,13 +191,15 @@ router.get('/user', auth, async (req, res) => {
 // @desc    Get public configuration (Google Client ID)
 // @access  Public
 router.get('/config', (req, res) => {
+    const clientId = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.trim() : null;
     res.json({
-        googleClientId: process.env.GOOGLE_CLIENT_ID
+        googleClientId: clientId
     });
 });
 
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.trim() : '';
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // @route   POST api/auth/google
 // @desc    Authenticate with Google
@@ -208,7 +210,7 @@ router.post('/google', async (req, res) => {
     try {
         const ticket = await client.verifyIdToken({
             idToken,
-            audience: process.env.GOOGLE_CLIENT_ID
+            audience: GOOGLE_CLIENT_ID
         });
 
         const { sub: googleId, email, name: displayName, picture } = ticket.getPayload();
