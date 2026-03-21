@@ -3320,21 +3320,7 @@ export class ResumePage {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Please login to use this feature');
 
-            const response = await fetch('/api/resume/ats-heatmap', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-auth-token': token
-                },
-                body: JSON.stringify({ resumeData })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.msg || 'Failed to generate heatmap');
-            }
-
-            const analysis = await response.json();
+            const analysis = await api.resume.getATSHeatmap(resumeData);
 
             // Apply specific highlights based on layout
             canvas.classList.add('ats-heatmap-active');

@@ -111,7 +111,7 @@ const analyzeATSHeatmap = async (resumeData) => {
         );
 
         const completion = await Promise.race([apiCall, timeout]);
-        return JSON.parse(completion.choices[0].message.content);
+        return extractJsonFromText(completion.choices[0].message.content);
     } catch (error) {
         console.warn("ATS Heatmap Groq failed, using Gemini fallback:", error.message);
         const model = genAI.getGenerativeModel({
@@ -120,7 +120,7 @@ const analyzeATSHeatmap = async (resumeData) => {
         });
         const result = await model.generateContent(getATSHeatmapPrompt(resumeData));
         const response = await result.response;
-        return JSON.parse(response.text().trim());
+        return extractJsonFromText(response.text().trim());
     }
 };
 

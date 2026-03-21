@@ -160,6 +160,15 @@ const api = {
                 headers: { 'x-auth-token': token },
                 body: JSON.stringify({ resumeData })
             });
+        },
+
+        getATSHeatmap: async (resumeData) => {
+            const token = localStorage.getItem('token');
+            return fetchJSON('/resume/ats-heatmap', {
+                method: 'POST',
+                headers: { 'x-auth-token': token },
+                body: JSON.stringify({ resumeData })
+            });
         }
     },
 

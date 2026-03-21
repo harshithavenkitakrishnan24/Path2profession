@@ -1,4 +1,4 @@
-const { PDFParse } = require('pdf-parse');
+const pdf = require('pdf-parse');
 const mammoth = require('mammoth');
 
 /**
@@ -11,21 +11,13 @@ const extractTextFromPDF = async (buffer) => {
         if (!buffer || buffer.length === 0) {
             throw new Error('PDF buffer is empty');
         }
-
-        // For pdf-parse v2, we must use the PDFParse class with 'new'
-        const parser = new PDFParse({ data: buffer });
-        const result = await parser.getText();
-
-        // Important: Always destroy the parser to free up memory (it uses a worker)
-        await parser.destroy();
-
-        if (!result || !result.text) {
+        const data = await pdf(buffer);
+        if (!data || !data.text) {
             throw new Error('No text found in PDF. Is it a scanned image?');
         }
-
-        return result.text;
+        return data.text;
     } catch (error) {
-        console.error('Detailed PDF Parsing Error:', error);
+        console.error('Error extracting text from PDF:', error);
         throw new Error(`Failed to parse PDF: ${error.message}`);
     }
 };
